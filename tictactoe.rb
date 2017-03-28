@@ -1,10 +1,3 @@
-$winningCombinations = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
-    $playerX = Array.new
-    $playerO = Array.new
-    $gameover = false
-    $board = [1,2,3,4,5,6,7,8,9]
-$who = "X"
-
 def instructions
     #instructions for play
     puts "Welcome to Tic-Tac-Toe."
@@ -13,42 +6,51 @@ def instructions
     puts "GLHF!"
 end
 
-def win(playerX, playerO, winningCombinations)
+def win
     #checks to see if either player has won
-    playerX.sort
-    playerO.sort
-    if winningCombinations.include?(playerX)
+    $playerX.sort
+    $playerO.sort
+    if $winningCombinations.include?($playerX)
         puts "GGWP! Captain X wins!"
-        $gameover = true
-    elsif winningCombinations.include?(playerO)
+        gameover = true
+    elsif $winningCombinations.include?($playerO)
         puts "GGWP! Captain O wins!"
+        $gameover = true
+    elsif $board.exclude?[1..9]
+        puts "It's a standoff. GGWP!"
         $gameover = true
     end
 end
 
 def game
     #mechanics for game
+    $winningCombinations = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]]
+    $playerX = Array.new
+    $playerO = Array.new
+    $gameover = false
+    $board = [1,2,3,4,5,6,7,8,9]
+    $who = "X"
     instructions
         until $gameover == true do
-            turn($who)
-            win($playerX, $playerO, $winningCombinations)
+            turn
+            win($playerX, $playerO, winningCombinations)
         end
     puts "Thanks for playing!"
 end
 
-def turn(who)
+def turn
     #mechanics for each turn
-    $success = 0
-    until $success > 0 do
+    success = 0
+    until success > 0 do
         selection = 0
         displayBoard($board)
-        puts "Please select a square, Captain #{who}."
+        puts "Please select a square, Captain #{$who}."
         selection = gets.to_i
-        checkSelection(selection)
+        checkSelection(selection,success)
     end
 end
 
-def checkSelection(selection)
+def checkSelection(selection,success)
     #checks to make sure the player's selection is a valid choice. If it is valid, it updates the board, and tracks the player's choice in their array. 
    if [1,2,3,4,5,6,7,8,9].include?(selection)
     case 
@@ -64,12 +66,12 @@ def checkSelection(selection)
         if $who == "X"
         $playerX.push(selection)
         $board.map!{|x|x == selection ? "X" : x}
-        $success += 1
+        success += 1
         $who = "O"
         else
         $playerO.push(selection)
         $board.map!{|x|x == selection ? "O" : x}
-        $success += 1
+        success += 1
         $who = "X"
     end
    end
